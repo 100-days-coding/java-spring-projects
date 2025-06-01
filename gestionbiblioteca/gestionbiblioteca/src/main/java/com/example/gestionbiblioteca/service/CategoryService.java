@@ -1,6 +1,6 @@
 package com.example.gestionbiblioteca.service;
 
-import com.example.gestionbiblioteca.entity.Book;
+
 import com.example.gestionbiblioteca.entity.Category;
 import com.example.gestionbiblioteca.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @Service
 public class CategoryService {
+
     @Autowired
     private CategoryRepository categoryRepository;
 
@@ -21,7 +22,19 @@ public class CategoryService {
         return categoryRepository.findById(id);
     }
 
-    public void saveOrUpdate(Category category){
-        categoryRepository.save(category);
+    public Category saveOrUpdate(Category category){
+        return categoryRepository.save(category);
+    }
+
+    public void deleteById(Long categoryId) {
+        categoryRepository.deleteById(categoryId);
+    }
+
+    public boolean existsById(Long categoryId) {
+        return categoryRepository.existsById(categoryId);
+    }
+
+    public List<Category> getCategoriesByName(String name) {
+        return categoryRepository.findByCategoryNameContainingIgnoreCase(name);
     }
 }

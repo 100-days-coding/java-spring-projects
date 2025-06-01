@@ -2,7 +2,7 @@ package com.example.gestionbiblioteca.service;
 
 import com.example.gestionbiblioteca.entity.Author;
 
-import com.example.gestionbiblioteca.entity.Book;
+
 import com.example.gestionbiblioteca.repository.AuthorRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Service
 public class AuthorService {
+
     @Autowired
     private AuthorRepository authorRepository;
 
@@ -24,7 +25,15 @@ public class AuthorService {
         return authorRepository.findById(authorId);
     }
 
-    public void saveOrUpdate(Author author){
-        authorRepository.save(author);
+    public Author saveOrUpdate(Author author){
+        return authorRepository.save(author);
+    }
+
+    public void deleteById(Long authorId){
+        authorRepository.deleteById(authorId);
+    }
+
+    public boolean existById(Long authorId){
+        return authorRepository.existsById(authorId);
     }
 }

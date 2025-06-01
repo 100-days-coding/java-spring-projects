@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Service
 public class BookService {
+
     @Autowired
     private BookRepository bookRepository;
 
@@ -22,8 +23,30 @@ public class BookService {
     }
 
     public Book saveOrUpdate(Book book){
-        bookRepository.save(book);
+        return bookRepository.save(book);
+    }
 
-        return book;
+    public void deleteById(Long bookId) {
+        bookRepository.deleteById(bookId);
+    }
+
+    public boolean existsById(Long bookId) {
+        return bookRepository.existsById(bookId);
+    }
+
+    public List<Book> getBooksByAuthor(Long authorId) {
+        return bookRepository.findByAuthor_AuthorId(authorId);
+    }
+
+    public List<Book> getBooksByCategory(Long categoryId) {
+        return bookRepository.findByCategories_CategoryId(categoryId);
+    }
+
+    public List<Book> getBooksByYear(Integer year) {
+        return bookRepository.findByBookYear(year);
+    }
+
+    public List<Book> getBooksByTitleContaining(String title) {
+        return bookRepository.findByBookTitleContainingIgnoreCase(title);
     }
 }
