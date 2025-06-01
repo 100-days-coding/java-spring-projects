@@ -1,5 +1,4 @@
 package com.example.gestionbiblioteca.entity;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -14,10 +13,13 @@ public class Author {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long authorId;
+
+    @Column(nullable = false)
     private String authorName;
+
     private String nationality;
 
-    @OneToMany(mappedBy = "author")
-
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("author-books")
     private List<Book> books;
 }
