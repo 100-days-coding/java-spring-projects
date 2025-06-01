@@ -18,8 +18,8 @@ public class CategoryService {
     public List<Category> getCategory(){
         return categoryRepository.findAll();
     }
-    public Optional<Category> getCategoryId(Long id){
-        return categoryRepository.findById(id);
+    public Optional<Category> getCategoryId(Long categoryId){
+        return categoryRepository.findById(categoryId);
     }
 
     public Category saveOrUpdate(Category category){

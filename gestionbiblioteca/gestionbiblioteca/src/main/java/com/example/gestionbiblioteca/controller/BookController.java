@@ -8,6 +8,7 @@ import com.example.gestionbiblioteca.service.AuthorService;
 import com.example.gestionbiblioteca.service.BookService;
 import com.example.gestionbiblioteca.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -17,9 +18,14 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "api/v1/books")
 public class BookController {
+
     @Autowired
     private BookService bookService;
+
+    @Autowired
     private AuthorService authorService;
+
+    @Autowired
     private CategoryService categoryService;
 
     @GetMapping
@@ -28,35 +34,106 @@ public class BookController {
     }
 
     @GetMapping("/{bookId}")
-    public Optional<Book> getById(@PathVariable("bookId") Long bookId) {
-        return bookService.getBooksId(bookId);
+    public ResponseEntity<Book> getById(@PathVariable("bookId") Long bookId) {
+        Optional<Book> book = bookService.getBooksId(bookId);
+        return book.map(ResponseEntity::ok)
+                  .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Book saveUpdate(@RequestBody BookRequest bookRequest) {
-        // Crear una instancia de Book y asignar los valores desde BookRequest
-        Book book = new Book();
-        book.setBookTitle(bookRequest.getBookTitle());
-        book.setBookYear(bookRequest.getBookYear());
+    public ResponseEntity<Book> create(@RequestBody BookRequest bookRequest) {
+        try {
+            Book book = new Book();
+            book.setBookTitle(bookRequest.getBookTitle());
+            book.setBookYear(bookRequest.getBookYear());
 
-        // Enlazar el autor existente con el libro
-        Author author = authorService.getAuthorId(bookRequest.getAuthorId())
-                .orElseThrow(() -> new RuntimeException("Author no found"));
-        book.setAuthor(author);
+            // Enlazar el autor existente con el libro
+            Author author = authorService.getAuthorId(bookRequest.getAuthorId())
+                    .orElseThrow(() -> new RuntimeException("Author not found"));
+            book.setAuthor(author);
 
-        /*if (bookRequest.getCategoryId() != null) {
-            List<Category> categories = new ArrayList<>();
-            for (Long categoryId : bookRequest.getCategoryId()) {
-                Category category = categoryService.getCategoryId(categoryId)
-                        .orElseThrow(() -> new RuntimeException("Category not found"));
-                categories.add(category);
-
+            // Enlazar categorías si se proporcionan
+            if (bookRequest.getCategoryId() != null && !bookRequest.getCategoryId().isEmpty()) {
+                List<Category> categories = new ArrayList<>();
+                for (Long categoryId : bookRequest.getCategoryId()) {
+                    Category category = categoryService.getCategoryId(categoryId)
+                            .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryId));
+                    categories.add(category);
+                }
+                book.setCategories(categories);
             }
-            book.setCategories(categories);
-        }*/
 
-        // Guardar o actualizar el libro
-        return bookService.saveOrUpdate(book);
+            Book savedBook = bookService.saveOrUpdate(book);
+            return ResponseEntity.ok(savedBook);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/{bookId}")
+    public ResponseEntity<Book> update(@PathVariable("bookId") Long bookId, 
+                                     @RequestBody BookRequest bookRequest) {
+        try {
+            Optional<Book> existingBookOpt = bookService.getBooksId(bookId);
+            if (existingBookOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            Book book = existingBookOpt.get();
+            book.setBookTitle(bookRequest.getBookTitle());
+            book.setBookYear(bookRequest.getBookYear());
+
+            // Actualizar autor
+            Author author = authorService.getAuthorId(bookRequest.getAuthorId())
+                    .orElseThrow(() -> new RuntimeException("Author not found"));
+            book.setAuthor(author);
+
+            // Actualizar categorías
+            if (bookRequest.getCategoryId() != null) {
+                List<Category> categories = new ArrayList<>();
+                for (Long categoryId : bookRequest.getCategoryId()) {
+                    Category category = categoryService.getCategoryId(categoryId)
+                            .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryId));
+                    categories.add(category);
+                }
+                book.setCategories(categories);
+            } else {
+                book.setCategories(new ArrayList<>());
+            }
+
+            Book updatedBook = bookService.saveOrUpdate(book);
+            return ResponseEntity.ok(updatedBook);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/{bookId}")
+    public ResponseEntity<Void> delete(@PathVariable("bookId") Long bookId) {
+        try {
+            if (bookService.getBooksId(bookId).isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            bookService.deleteById(bookId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    // Endpoint adicional: buscar libros por autor
+    @GetMapping("/author/{authorId}")
+    public ResponseEntity<List<Book>> getBooksByAuthor(@PathVariable("authorId") Long authorId) {
+        List<Book> books = bookService.getBooksByAuthor(authorId);
+        return ResponseEntity.ok(books);
+    }
+
+    // Endpoint adicional: buscar libros por categoría
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<Book>> getBooksByCategory(@PathVariable("categoryId") Long categoryId) {
+        List<Book> books = bookService.getBooksByCategory(categoryId);
+        return ResponseEntity.ok(books);
     }
 }
 
