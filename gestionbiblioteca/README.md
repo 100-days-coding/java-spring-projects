@@ -36,8 +36,8 @@ y agilizar la gestión diaria.
 
 ```bash
 # Clona el repositorio
-git clone https://github.com/tu-usuario/library-management.git
-cd library-management
+git clone https://github.com/100-days-coding/java-spring-projects/tree/05aaf955c769f4444f52c165fb3c122845f67e56/gestionbiblioteca/gestionbiblioteca
+cd gestionbiblioteca
 
 # Compila el proyecto
 ./mvnw clean install
