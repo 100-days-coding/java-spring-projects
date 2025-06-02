@@ -23,7 +23,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    public ResponseEntity<Category> getById(@PathVariable("categoryId") Long categoryId){
+    public ResponseEntity<Category> getById(@PathVariable Long categoryId){
         Optional<Category> category = categoryService.getCategoryId(categoryId);
         return category.map(ResponseEntity::ok)
                      .orElse(ResponseEntity.notFound().build());
@@ -40,7 +40,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{categoryId}")
-    public ResponseEntity<Category> update(@PathVariable("categoryId") Long categoryId, 
+    public ResponseEntity<Category> update(@PathVariable Long categoryId, 
                                          @RequestBody Category categoryDetails) {
         try {
             Optional<Category> existingCategory = categoryService.getCategoryId(categoryId);
@@ -59,7 +59,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<Void> delete(@PathVariable("categoryId") Long categoryId) {
+    public ResponseEntity<Void> delete(@PathVariable Long categoryId) {
         try {
             if (categoryService.getCategoryId(categoryId).isEmpty()) {
                 return ResponseEntity.notFound().build();

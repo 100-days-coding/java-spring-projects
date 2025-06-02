@@ -34,7 +34,7 @@ public class BookController {
     }
 
     @GetMapping("/{bookId}")
-    public ResponseEntity<Book> getById(@PathVariable("bookId") Long bookId) {
+    public ResponseEntity<Book> getById(@PathVariable Long bookId) {
         Optional<Book> book = bookService.getBooksId(bookId);
         return book.map(ResponseEntity::ok)
                   .orElse(ResponseEntity.notFound().build());
@@ -71,7 +71,7 @@ public class BookController {
     }
 
     @PutMapping("/{bookId}")
-    public ResponseEntity<Book> update(@PathVariable("bookId") Long bookId, 
+    public ResponseEntity<Book> update(@PathVariable Long bookId, 
                                      @RequestBody BookRequest bookRequest) {
         try {
             Optional<Book> existingBookOpt = bookService.getBooksId(bookId);
@@ -109,7 +109,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{bookId}")
-    public ResponseEntity<Void> delete(@PathVariable("bookId") Long bookId) {
+    public ResponseEntity<Void> delete(@PathVariable Long bookId) {
         try {
             if (bookService.getBooksId(bookId).isEmpty()) {
                 return ResponseEntity.notFound().build();
@@ -124,14 +124,14 @@ public class BookController {
 
     // Endpoint adicional: buscar libros por autor
     @GetMapping("/author/{authorId}")
-    public ResponseEntity<List<Book>> getBooksByAuthor(@PathVariable("authorId") Long authorId) {
+    public ResponseEntity<List<Book>> getBooksByAuthor(@PathVariable Long authorId) {
         List<Book> books = bookService.getBooksByAuthor(authorId);
         return ResponseEntity.ok(books);
     }
 
     // Endpoint adicional: buscar libros por categoría
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<Book>> getBooksByCategory(@PathVariable("categoryId") Long categoryId) {
+    public ResponseEntity<List<Book>> getBooksByCategory(@PathVariable Long categoryId) {
         List<Book> books = bookService.getBooksByCategory(categoryId);
         return ResponseEntity.ok(books);
     }

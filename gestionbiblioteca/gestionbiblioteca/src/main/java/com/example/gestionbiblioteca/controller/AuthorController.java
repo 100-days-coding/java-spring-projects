@@ -23,7 +23,7 @@ public class AuthorController {
     }
 
     @GetMapping("/{authorId}")
-    public ResponseEntity<Author> getById(@PathVariable("authorId") Long authorId){
+    public ResponseEntity<Author> getById(@PathVariable Long authorId){
         Optional<Author> author = authorService.getAuthorId(authorId);
         return author.map(ResponseEntity::ok)
                     .orElse(ResponseEntity.notFound().build());
@@ -40,7 +40,7 @@ public class AuthorController {
     }
 
     @PutMapping("/{authorId}")
-    public ResponseEntity<Author> update(@PathVariable("authorId") Long authorId, 
+    public ResponseEntity<Author> update(@PathVariable Long authorId, 
                                        @RequestBody Author authorDetails) {
         try {
             Optional<Author> existingAuthor = authorService.getAuthorId(authorId);
@@ -60,7 +60,7 @@ public class AuthorController {
     }
 
     @DeleteMapping("/{authorId}")
-    public ResponseEntity<Void> delete(@PathVariable("authorId") Long authorId) {
+    public ResponseEntity<Void> delete(@PathVariable Long authorId) {
         try {
             if (authorService.getAuthorId(authorId).isEmpty()) {
                 return ResponseEntity.notFound().build();
