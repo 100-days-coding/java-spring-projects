@@ -3,6 +3,7 @@ package com.idone.task_api.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.idone.task_api.entity.Task;
@@ -20,5 +21,12 @@ public interface TaskRepository extends JpaRepository<Task, Long>{
 
     //Buscar por titulo que contenga texto
     List<Task> findByTitleContainingIgnoreCase(String title);
+
+    //Contar tareas por status
+    long cocountByStatus(TaskStatus status);
+
+    //Buscar tareas pendientes con prioridadd alta
+    @Query("SELECT t FROM Task t WHERE t.status = 'PENDING' and t.priority = 'HIGH'") 
+    List<Task> findHighPriorityListPendingTasks();
 
 }
