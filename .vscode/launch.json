@@ -9,6 +9,16 @@
             "projectName": "gestionbiblioteca",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-TaskApiApplication<task-api>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.idone.task_api.TaskApiApplication",
+            "projectName": "task-api",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
