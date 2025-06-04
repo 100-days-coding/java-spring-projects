@@ -23,7 +23,7 @@ public interface TaskRepository extends JpaRepository<Task, Long>{
     List<Task> findByTitleContainingIgnoreCase(String title);
 
     //Contar tareas por status
-    long cocountByStatus(TaskStatus status);
+    long countByStatus(TaskStatus status);
 
     //Buscar tareas pendientes con prioridadd alta
     @Query("SELECT t FROM Task t WHERE t.status = 'PENDING' and t.priority = 'HIGH'") 
